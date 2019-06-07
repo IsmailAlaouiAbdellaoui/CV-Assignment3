@@ -20,9 +20,28 @@ xprime = matches[:,2]
 yprime = matches[:,3]
 
   
-A_matrix = np.column_stack((x_xprime,x_yprime,x,xprime_y,y_yprime,y,xprime,yprime,np.ones((309,1))))
+A_matrix = np.column_stack((x_xprime,x_yprime,x,xprime_y,y_yprime,y,xprime,yprime,np.ones((len(matches),1))))
 
-vectors,values,vh = np.linalg.svd(A_matrix)
-min_vector = vh[np.argmin(values)]
-#print(np.argmin(values)) 
+#getting SVD of A
+u, s, vh = np.linalg.svd(A_matrix)
 
+#finding the values of F
+f = vh[np.argmin(s)]
+
+#calculating the SVD of F
+uf, sf, vhf = np.linalg.svd(f.reshape(3,3).T)
+
+#setting the smallest singular favue to 0
+sf[np.argmin(sf)] = 0
+
+#recalculate F values
+smat = np.diag(sf)
+fundamental_matrix = np.linalg.multi_dot([uf, smat , vhf])
+
+    
+pt1 =  np.array([matches[0,0], matches[0,1], 1])
+    
+pt2 =  np.array([matches[0,2], matches[0,3], 1])
+    
+dist = np.linalg.norm(pt2.T.dot(fundamental_matrix).dot(pt1))
+print(dist)

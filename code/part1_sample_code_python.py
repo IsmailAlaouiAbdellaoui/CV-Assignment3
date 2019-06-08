@@ -39,13 +39,12 @@ def fit_fundamental_matrix(matches):
     point1 = np.array([matches[0,0], matches[0,1], 1])
     point2 = np.array([matches[0,2], matches[0,3], 1]).T
     test = np.linalg.multi_dot([point1, fundamental_matrix, point2])
-    print(test)
+#    print(test)
     
     return fundamental_matrix
-    
 
 matches = np.loadtxt('../data/library/library_matches.txt')
-#print(matches[:,3])
+
 print(matches.shape)
 
 
@@ -108,7 +107,8 @@ if __name__ == '__main__':
     ax.plot([pt1[:, 0], pt2[:, 0]], [pt1[:, 1], pt2[:, 1]], 'g')
     
     
-    points1 = np.array([matches[:, 2] - closest_pt[:, 0]])
-    points2 = np.array([matches[:, 3] - closest_pt[:, 1]])
-    print(distance.cdist(points1, points2))
-    plt.show()
+    #find the mean squared error distance
+    error_x = np.array([matches[:, 2] - closest_pt[:, 0]])
+    error_y = np.array([matches[:, 3] - closest_pt[:, 1]])
+    mean_distance = np.sum(np.sqrt(error_x**2 + error_y**2))/len(error_x[0])
+    print("The residual error is :", mean_distance)

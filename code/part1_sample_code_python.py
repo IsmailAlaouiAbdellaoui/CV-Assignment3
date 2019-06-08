@@ -7,7 +7,7 @@ from scipy.spatial import distance
 
 
 def fit_fundamental_matrix(matches):
-    print("Fitting of the fundamental Matrix takes place here!!!")
+#    print("Fitting of the fundamental Matrix takes place here!!!")
     x_xprime = matches[:,0]* matches[:,2]
     x_yprime = matches[:,0] * matches[:,3]
     x = matches[:,0]
@@ -39,7 +39,7 @@ def fit_fundamental_matrix(matches):
     point1 = np.array([matches[0,0], matches[0,1], 1])
     point2 = np.array([matches[0,2], matches[0,3], 1]).T
     test = np.linalg.multi_dot([point1, fundamental_matrix, point2])
-    print(test)
+#    print(test)
     
     return fundamental_matrix
     

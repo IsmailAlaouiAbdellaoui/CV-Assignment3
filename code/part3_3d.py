@@ -16,25 +16,25 @@ camera_2_house = np.loadtxt('../data/house/house2_camera.txt')
 #print(camera_1_library[2,1])
 #linear traingulation - estimate a 3D point X
 matches_librar=matches_library[:,1]
-A_matrix_row1 = np.array(np.dot(matches_library[:,1],camera_1_library[1,3])-camera_1_library[2,1],
-                           np.dot(matches_library[:,1],camera_1_library[2,3])-camera_1_library[2,2],
-                           matches_library[:,1]*camera_1_library[3,3]-camera_1_library[2,3],
-                           np.dot(matches_library[:,1],camera_1_library[4,3])-camera_1_library[2,4])
+A_matrix_row1 = np.array([np.dot(matches_library[:,1],camera_1_library[2,0])-camera_1_library[1,0],
+                           np.dot(matches_library[:,1],camera_1_library[2,1])-camera_1_library[1,1],
+                           np.dot(matches_library[:,1],camera_1_library[2,2])-camera_1_library[1,2],
+                           np.dot(matches_library[:,1],camera_1_library[2,3])-camera_1_library[1,3]])
 
-#A_matrix_row2 = np.array(np.dot(matches_library[:,0],camera_1_library[1,3])-camera_1_library[1,1],
-#                           np.dot(matches_library[:,0],camera_1_library[2,3])-camera_1_library[1,2],
-#                           np.dot(matches_library[:,0],camera_1_library[3,3])-camera_1_library[1,3],
-#                           np.dot(matches_library[:,0],camera_1_library[4,3])-camera_1_library[1,4])
-#
-#A_matrix_row3 = np.array(np.dot(matches_library[:,3],camera_2_library[1,3])-camera_2_library[2,1],
-#                           np.dot(matches_library[:,3],camera_2_library[2,3])-camera_2_library[2,2],
-#                           np.dot(matches_library[:,3],camera_2_library[3,3])-camera_2_library[2,3],
-#                           np.dot(matches_library[:,3],camera_2_library[4,3])-camera_2_library[2,4])
-#
-#A_matrix_row4 = np.array(np.dot(matches_library[:,2],camera_2_library[1,3])-camera_2_library[1,1],
-#                           np.dot(matches_library[:,2],camera_2_library[2,3])-camera_2_library[1,2],
-#                           np.dot(matches_library[:,2],camera_2_library[3,3])-camera_2_library[1,3],
-#                           np.dot(matches_library[:,2],camera_2_library[4,3])-camera_2_library[1,4])
+A_matrix_row2 = np.array([np.dot(matches_library[:,0],camera_1_library[2,0])-camera_1_library[0,0],
+                           np.dot(matches_library[:,0],camera_1_library[2,1])-camera_1_library[0,1],
+                           np.dot(matches_library[:,0],camera_1_library[2,2])-camera_1_library[0,2],
+                           np.dot(matches_library[:,0],camera_1_library[2,3])-camera_1_library[0,3]])
+
+A_matrix_row3 = np.array([np.dot(matches_library[:,3],camera_2_library[2,0])-camera_2_library[1,0],
+                           np.dot(matches_library[:,3],camera_2_library[2,1])-camera_2_library[1,1],
+                           np.dot(matches_library[:,3],camera_2_library[2,2])-camera_2_library[1,2],
+                           np.dot(matches_library[:,3],camera_2_library[2,3])-camera_2_library[1,3]])
+
+A_matrix_row4 = np.array([np.dot(matches_library[:,2],camera_2_library[2,0])-camera_2_library[0,0],
+                           np.dot(matches_library[:,2],camera_2_library[2,1])-camera_2_library[0,1],
+                           np.dot(matches_library[:,2],camera_2_library[2,2])-camera_2_library[0,2],
+                           np.dot(matches_library[:,2],camera_2_library[2,3])-camera_2_library[0,3]])
 
 test = np.stack((A_matrix_row1,A_matrix_row2,A_matrix_row3,A_matrix_row4))
 print(test)

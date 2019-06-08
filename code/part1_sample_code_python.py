@@ -106,8 +106,9 @@ if __name__ == '__main__':
     ax.plot(matches[:,2], matches[:, 3], '+r')
     ax.plot([matches[:, 2], closest_pt[:, 0]], [matches[:, 3], closest_pt[:, 1]], 'r')
     ax.plot([pt1[:, 0], pt2[:, 0]], [pt1[:, 1], pt2[:, 1]], 'g')
-    plt.show()
+    
     
     points1 = np.array([matches[:, 2] - closest_pt[:, 0]])
     points2 = np.array([matches[:, 3] - closest_pt[:, 1]])
     print(distance.cdist(points1, points2))
+    plt.show()

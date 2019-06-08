@@ -3,6 +3,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 import copy
+from sklearn.metrics import mean_squared_error
+import math
 
 matches = np.loadtxt('../data/library/library_matches.txt')
 #print(matches[:,3])
@@ -43,5 +45,32 @@ pt1 =  np.array([matches[0,0], matches[0,1], 1])
     
 pt2 =  np.array([matches[0,2], matches[0,3], 1])
     
-dist = np.linalg.norm(pt2.T.dot(fundamental_matrix).dot(pt1))
-print(dist)
+norm = np.linalg.norm(pt2.T.dot(fundamental_matrix).dot(pt1))
+print(norm)
+x = matches[:,0]
+y = matches[:,1]
+x_p = matches[:,2]
+y_p = matches[:,3]
+#temp = mean_squared_error(np.array(x_p - x),np.array(y_p-y))
+#print(temp)
+#print(x)
+#testx = [matches[:,2]-matches[:,0]]
+#testy = [matches[:,3]-matches[:,1]]
+def calculate_mse():
+    mse = 0
+    for i in range(309):
+        x_difference = matches[i,2] - matches[i,0]
+        y_difference = matches[i,3] - matches[i,1]
+        squared = x_difference**2 + y_difference**2
+        result = math.sqrt(squared)
+        mse += result
+    mse /= 309
+    return mse
+print(calculate_mse())
+#temp = mean_squared_error(matches[:,2:3],matches[:,0:1])
+#temp3 = mean_squared_error(testx,testy)
+#print(matches[1,2:4])
+#temp2 = mean_squared_error(matches)
+#print(temp)
+#print(temp3)
+#print(testx)

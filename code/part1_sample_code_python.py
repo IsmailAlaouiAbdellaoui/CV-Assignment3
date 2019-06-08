@@ -7,7 +7,7 @@ from scipy.spatial import distance
 
 
 def fit_fundamental_matrix(matches):
-    print("Fitting of the fundamental Matrix takes place here!!!")
+#    print("Fitting of the fundamental Matrix takes place here!!!")
     x_xprime = matches[:,0]* matches[:,2]
     x_yprime = matches[:,0] * matches[:,3]
     x = matches[:,0]

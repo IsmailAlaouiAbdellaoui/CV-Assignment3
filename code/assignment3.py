@@ -5,6 +5,8 @@ import matplotlib.cm as cm
 import copy
 from sklearn.metrics import mean_squared_error
 import math
+import random
+import part1_sample_code_python as p1
 
 matches = np.loadtxt('../data/library/library_matches.txt')
 #print(matches[:,3])
@@ -12,6 +14,7 @@ matches = np.loadtxt('../data/library/library_matches.txt')
 #print(matches[1])
 print(matches)
 print("\n")
+
 x_xprime = matches[:,0]* matches[:,2]
 x_yprime = matches[:,0] * matches[:,3]
 x = matches[:,0]
@@ -51,11 +54,7 @@ x = matches[:,0]
 y = matches[:,1]
 x_p = matches[:,2]
 y_p = matches[:,3]
-#temp = mean_squared_error(np.array(x_p - x),np.array(y_p-y))
-#print(temp)
-#print(x)
-#testx = [matches[:,2]-matches[:,0]]
-#testy = [matches[:,3]-matches[:,1]]
+
 def calculate_mse():
     mse = 0
     for i in range(309):
@@ -67,10 +66,39 @@ def calculate_mse():
     mse /= 309
     return mse
 print(calculate_mse())
-#temp = mean_squared_error(matches[:,2:3],matches[:,0:1])
-#temp3 = mean_squared_error(testx,testy)
-#print(matches[1,2:4])
-#temp2 = mean_squared_error(matches)
-#print(temp)
-#print(temp3)
-#print(testx)
+
+def get_random_points(number_points):
+    points = np.zeros((number_points,4),dtype=float)
+    for i in range(number_points):
+        points[i] = matches[random.randint(0,308)]
+        
+    return points
+
+#test = get_random_points(10)
+#print(test)
+#threshold = 1
+while(True):
+    points = get_random_points(10)
+    F = p1.fit_fundamental_matrix(points)
+    random_point = matches[random.randint(0,308)]
+    x = np.append(random_point[0:2],1)
+#    x = np.column_stack((random_point[0:2]))
+    y = np.append(random_point[2:4],1)
+#    print(x)
+    threshold = np.linalg.multi_dot([x.T, F, y])
+    if threshold ==0:
+        break
+print(F)
+    
+
+#print(x)
+#print(y)
+    
+#    threshold = 
+    
+    
+    
+        
+    
+    
+

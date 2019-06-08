@@ -88,6 +88,7 @@ if __name__ == '__main__':
     '''
     display second image with epipolar lines reprojected from the first image
     '''
+    N = len(best_matches)
     M = np.c_[best_matches[:, 0:2], np.ones((N, 1))].transpose()
     L1 = np.matmul(F, M).transpose()  # transform points from
     # the first image to get epipolar lines in the second image

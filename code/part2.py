@@ -54,54 +54,62 @@ def get_random_points(number_points, matches):
 
 def RANSAC_for_fundamental_matrix(matches):  # this is a function that you should write
     
-    THRESHOLD = 0.05
-    most_inliers_percent = 0
+    #setting the distance threshold and N of iterations
+    THRESHOLD = 0.07
+    N = 5000
     
-    for i in range(2000):
-
+    best_distance = 999
+    
+    test_list = []
+    
+    for i in range(N):
+        
+        #get some random feature points >8
         points = get_random_points(10, matches)
+        #calculate the fundamental matrix from those random points
         F = fit_fundamental_matrix(points)
+        
+        #getting fund matrix from cv2 for test purposes
 #        F, mask = cv2.findFundamentalMat(points[:,0:2], points[:,2:4], method=cv2.FM_8POINT)
-#        F = F.T
-        inliers_count = 0
-        outliers_count = 0
+        
+        #resetting counters
         inliers = []
         distance_sum = 0
-        best_distance = 999
         
+        #fit the fundamental matrix to every match
         for i in range(len(matches)):
             
+            #get the first and second points in matches and append 1
             points1 = np.append(matches[i, 0:2], 1)
             points2 = np.append(matches[i, 2:4], 1)
-
+            
+            #the metric distance. closer to zero, the better
             distance = np.linalg.multi_dot([ points2.T , F, points1])
             
+            #keeping only the inliers
             if abs(distance) < THRESHOLD:
-                inliers_count += 1
                 inliers.append(matches[i])
-                distance_sum += abs(distance)
+                distance_sum += abs(distance) 
                 
-            else:
-                outliers_count+= 1
- 
-        if (inliers_count >2  and distance_sum/inliers_count < best_distance): 
+        inliers_count = len(inliers) 
+        
+        
+        test_list.append([inliers_count, distance_sum])        
+
+        #setting the metric to keep the best set of inliers and best F
+        #keep the F and inliers of the minimum  total average distance
+        if (inliers_count >5  and distance_sum/inliers_count < best_distance): 
             best_inliers = np.array(inliers)
             best_F = F
             best_distance = distance_sum/inliers_count             
-#        if (inliers_count/len(matches) >= most_inliers_percent): 
-#            best_inliers = np.array(inliers)
-#            best_F = F
-#            most_inliers_percent = inliers_count/len(matches)
             
-        print("inliers : ", inliers_count, "\n" )
-        print("percent : ", inliers_count/len(matches), "\n" )
-        print("distance:", distance, "\n")
-#    F = fit_fundamental_matrix(best_inliers)    
+    #re-estimate the fundamental matrix using the inliers
+    F = fit_fundamental_matrix(best_inliers)    
         
-
     print("inliers : ", len(best_inliers), "\n" )
-    print("percent : ", most_inliers_percent, "\n" )
     print("best_distance : ", best_distance, "\n" )
+    
+#    np.save( "bestin_"+str(len(best_inliers))+ "bestdist_" + str(round(best_distance,5)), np.array(test_list))
     
     return best_F, best_inliers
     
@@ -172,6 +180,13 @@ if __name__ == '__main__':
     ax.plot([best_matches[:, 2], closest_pt[:, 0]], [best_matches[:, 3], closest_pt[:, 1]], 'r')
     ax.plot([pt1[:, 0], pt2[:, 0]], [pt1[:, 1], pt2[:, 1]], 'g')
     plt.show()
+    
+    
+    #find the mean squared error distance
+    error_x = np.array([best_matches[:, 2] - closest_pt[:, 0]])
+    error_y = np.array([best_matches[:, 3] - closest_pt[:, 1]])
+    mean_distance = np.sum(np.sqrt(error_x**2 + error_y**2))/len(error_x[0])
+    print("The residual error :", mean_distance)
 
     ## optional, re-estimate the fundamental matrix using the best matches, similar to part1
     # F = fit_fundamental_matrix(best_matches); # this is a function that you wrote for part1

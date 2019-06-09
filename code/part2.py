@@ -55,8 +55,8 @@ def get_random_points(number_points, matches):
 def RANSAC_for_fundamental_matrix(matches):  # this is a function that you should write
     
     #setting the distance threshold and N of iterations
-    THRESHOLD = 0.07
-    N = 5000
+    THRESHOLD = 0.1
+    N = 10000
     
     best_distance = 999
     
@@ -91,14 +91,11 @@ def RANSAC_for_fundamental_matrix(matches):  # this is a function that you shoul
                 inliers.append(matches[i])
                 distance_sum += abs(distance) 
                 
-        inliers_count = len(inliers) 
-        
-        
-        test_list.append([inliers_count, distance_sum])        
+        inliers_count = len(inliers)      
 
         #setting the metric to keep the best set of inliers and best F
         #keep the F and inliers of the minimum  total average distance
-        if (inliers_count >5  and distance_sum/inliers_count < best_distance): 
+        if (inliers_count >30  and distance_sum/inliers_count < best_distance): 
             best_inliers = np.array(inliers)
             best_F = F
             best_distance = distance_sum/inliers_count             
@@ -108,7 +105,6 @@ def RANSAC_for_fundamental_matrix(matches):  # this is a function that you shoul
         
     print("inliers : ", len(best_inliers), "\n" )
     print("best_distance : ", best_distance, "\n" )
-    
 #    np.save( "bestin_"+str(len(best_inliers))+ "bestdist_" + str(round(best_distance,5)), np.array(test_list))
     
     return best_F, best_inliers

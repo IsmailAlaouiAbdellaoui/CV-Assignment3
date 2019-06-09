@@ -133,7 +133,7 @@ def triangulation_plotting_house(matches_house,camera_1_house,camera_2_house):
     camera_center2 = camera_center2/camera_center2[-1]
     
     fig = plt.figure()
-    fig.suptitle('3D Reconstruction of the house', fontsize=16)
+    fig.suptitle('3D Reconstruction of the House', fontsize=16)
     ax = fig.add_subplot(111, projection="3d")
     ax.scatter(camera_center1[0],camera_center1[1],camera_center1[2],c='r',marker='+',label="Camera 1 center")
     ax.scatter(camera_center2[0],camera_center2[1],camera_center2[2],c='g',marker='+',label="Camera 2 center")
@@ -141,9 +141,9 @@ def triangulation_plotting_house(matches_house,camera_1_house,camera_2_house):
         ax.scatter(points_3d_house[i][0],points_3d_house[i][1],points_3d_house[i][2],c='b')
     plt.legend()
     plt.axis('equal')
-    ax.set_xlim(-10, 10)
+    ax.set_xlim(-5, 2.5)
     ax.set_ylim(-10, 10)
-    ax.set_zlim(-15, 15)
+    ax.set_zlim(-10, 0)
     
     ax.set_xlabel('X axis')
     ax.set_ylabel('Y axis')
@@ -152,7 +152,7 @@ def triangulation_plotting_house(matches_house,camera_1_house,camera_2_house):
 
   
 
-triangulation_plotting_library(matches_library,camera_1_library,camera_2_library)
+#triangulation_plotting_library(matches_library,camera_1_library,camera_2_library)
 
 triangulation_plotting_house(matches_house,camera_1_house,camera_2_house)
 

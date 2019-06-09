@@ -45,8 +45,6 @@ def fit_fundamental_matrix(matches):
 
 matches = np.loadtxt('../data/library/library_matches.txt')
 
-print(matches.shape)
-
 
 if __name__ == '__main__':
 

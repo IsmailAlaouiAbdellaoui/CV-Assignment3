@@ -5,6 +5,9 @@ from cyvlfeat import sift
 from scipy.spatial.distance import cdist
 import matplotlib.cm as cm
 import copy
+from part1 import fit_fundamental_matrix 
+import random 
+import cv2
 
 
 def find_matching_points(image1, image2, n_levels=3, distance_threshold=300):
@@ -42,8 +45,58 @@ def find_matching_points(image1, image2, n_levels=3, distance_threshold=300):
     return np.array(matches_1), np.array(matches_2)
 
 
+def get_random_points(number_points, matches):
+    points = np.zeros((number_points,4),dtype=float)
+    for i in range(number_points):
+        points[i] = matches[random.randint(0, len(matches)-1)]
+
+    return points
+
 def RANSAC_for_fundamental_matrix(matches):  # this is a function that you should write
-    print('Implementation of RANSAC to to find the best fundamental matrix takes place here')
+    
+    THRESHOLD = 0.05
+    most_inliers_percent = 0
+    
+    for i in range(1000):
+
+        points = get_random_points(200, matches)
+#        F = fit_fundamental_matrix(points)
+        F, mask = cv2.findFundamentalMat(points[:,0:2], points[:,2:4], method=cv2.FM_8POINT)
+#        F = F.T
+        inliers_count = 0
+        outliers_count = 0
+        inliers = []
+        
+        for i in range(len(matches)):
+            
+            points1 = np.append(matches[i, 0:2], 1)
+            points2 = np.append(matches[i, 2:4], 1)
+
+            distance = np.linalg.multi_dot([points1, F, points2.T])
+            
+            if abs(distance) < THRESHOLD:
+                inliers_count += 1
+                inliers.append(matches[i])
+                
+            else:
+                outliers_count+= 1
+                
+        if (inliers_count/len(matches) >= most_inliers_percent): 
+            best_inliers = np.array(inliers)
+            best_F = F
+            most_inliers_percent = inliers_count/len(matches)
+            
+        print("inliers : ", inliers_count, "\n" )
+        print("percent : ", inliers_count/len(matches), "\n" )
+        print("distance:", distance, "\n")
+#    F = fit_fundamental_matrix(best_inliers)    
+        
+
+    print("inliers : ", len(best_inliers), "\n" )
+    print("percent : ", most_inliers_percent, "\n" )
+    
+    return best_F, best_inliers
+    
 
 
 if __name__ == '__main__':
@@ -69,19 +122,19 @@ if __name__ == '__main__':
     Display two images side-by-side with matches
     this code is to help you visualize the matches, you don't need to use it to produce the results for the assignment
     '''
-
-    I3 = np.zeros((I1.size[1], I1.size[0] * 2, 3))
-    I3[:, :I1.size[0], :] = I1;
-    I3[:, I1.size[0]:, :] = I2;
-    matches_to_plot[:, 2] += I2.size[0]  # add to the x-coordinate of second image
-    fig, ax = plt.subplots()
-    ax.set_aspect('equal')
-    ax.imshow(np.array(I3).astype(int))
-    colors = iter(cm.rainbow(np.linspace(0, 1, matches_to_plot.shape[0])))
-
-    [plt.plot([m[0], m[2]], [m[1], m[3]], color=next(colors)) for m in matches_to_plot]
-    plt.show()
-
+#
+#    I3 = np.zeros((I1.size[1], I1.size[0] * 2, 3))
+#    I3[:, :I1.size[0], :] = I1;
+#    I3[:, I1.size[0]:, :] = I2;
+#    matches_to_plot[:, 2] += I2.size[0]  # add to the x-coordinate of second image
+#    fig, ax = plt.subplots()
+#    ax.set_aspect('equal')
+#    ax.imshow(np.array(I3).astype(int))
+#    colors = iter(cm.rainbow(np.linspace(0, 1, matches_to_plot.shape[0])))
+#
+#    [plt.plot([m[0], m[2]], [m[1], m[3]], color=next(colors)) for m in matches_to_plot]
+#    plt.show()
+#
     # first, find the fundamental matrix to on the unreliable matches using RANSAC
     [F, best_matches] = RANSAC_for_fundamental_matrix(matches)  # this is a function that you should write
 

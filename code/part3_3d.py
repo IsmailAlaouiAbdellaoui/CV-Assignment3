@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 from sklearn.metrics import mean_squared_error
 from mpl_toolkits.mplot3d import Axes3D
+import cv2
 
 matches_library = np.loadtxt('../data/library/library_matches.txt')
 camera_1_library = np.loadtxt('../data/library/library1_camera.txt')
@@ -76,6 +77,9 @@ def triangulation_plotting_library(matches_library,camera1_library,camera2_libra
         ax.scatter(points_3d_library[i][0],points_3d_library[i][1],points_3d_library[i][2],c='b')
     plt.legend()
     plt.axis('equal')
+    plt.xlabel("x axis")
+    plt.ylabel("y axis")
+#    plt.zlabel("z axis")
 
 
 
@@ -139,14 +143,18 @@ def triangulation_plotting_house(matches_house,camera_1_house,camera_2_house):
         ax.scatter(points_3d_house[i][0],points_3d_house[i][1],points_3d_house[i][2],c='b')
     plt.legend()
     plt.axis('equal')
+    plt.xlabel("x axis")
+    plt.ylabel("y axis")
+#    plt.zlabel("z axis")
     
-import cv2
-#triangulation_plotting_library(matches_library,camera_1_library,camera_2_library)
-#triangulation_plotting_house(matches_house,camera_1_house,camera_2_house)
+
+triangulation_plotting_library(matches_library,camera_1_library,camera_2_library)
+triangulation_plotting_house(matches_house,camera_1_house,camera_2_house)
 def test_house_triangulation(matches_house,camera_1_house,camera_2_house):
     points_3d_house = np.zeros((len(matches_house),4),dtype=float)
     for i in range(len(matches_house)):
-        points_3d_house[i] = cv2.triangulatePoints(camera_1_library, camera_2_library, matches_house[i,0:2], matches_house[i,2:4])
+#        print(matches_house[i,2:4].shape)
+        points_3d_house[i] = cv2.triangulatePoints(camera_1_house, camera_2_house, matches_house[i,0:2], matches_house[i,2:4]).reshape(1,4)
     camera_center1 = compute_camera_center(camera_1_house)
     camera_center2 = compute_camera_center(camera_2_house)
     
@@ -159,8 +167,13 @@ def test_house_triangulation(matches_house,camera_1_house,camera_2_house):
         ax.scatter(points_3d_house[i][0],points_3d_house[i][1],points_3d_house[i][2],c='b')
     plt.legend()
     plt.axis('equal')
-    
-test_house_triangulation(matches_house,camera_1_house,camera_2_house)
+    plt.xlabel("x axis")
+    plt.ylabel("y axis")
+#    plt.zlabel("z axis")
+    return points_3d_house
+
+#def test_library_triangulation(matches_)
+#test_house_triangulation(matches_house,camera_1_house,camera_2_house)
     
     
     

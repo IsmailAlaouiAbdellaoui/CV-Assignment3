@@ -57,34 +57,41 @@ def RANSAC_for_fundamental_matrix(matches):  # this is a function that you shoul
     THRESHOLD = 0.05
     most_inliers_percent = 0
     
-    for i in range(1000):
+    for i in range(2000):
 
-        points = get_random_points(200, matches)
-#        F = fit_fundamental_matrix(points)
-        F, mask = cv2.findFundamentalMat(points[:,0:2], points[:,2:4], method=cv2.FM_8POINT)
+        points = get_random_points(10, matches)
+        F = fit_fundamental_matrix(points)
+#        F, mask = cv2.findFundamentalMat(points[:,0:2], points[:,2:4], method=cv2.FM_8POINT)
 #        F = F.T
         inliers_count = 0
         outliers_count = 0
         inliers = []
+        distance_sum = 0
+        best_distance = 999
         
         for i in range(len(matches)):
             
             points1 = np.append(matches[i, 0:2], 1)
             points2 = np.append(matches[i, 2:4], 1)
 
-            distance = np.linalg.multi_dot([points1, F, points2.T])
+            distance = np.linalg.multi_dot([ points2.T , F, points1])
             
             if abs(distance) < THRESHOLD:
                 inliers_count += 1
                 inliers.append(matches[i])
+                distance_sum += abs(distance)
                 
             else:
                 outliers_count+= 1
-                
-        if (inliers_count/len(matches) >= most_inliers_percent): 
+ 
+        if (inliers_count >2  and distance_sum/inliers_count < best_distance): 
             best_inliers = np.array(inliers)
             best_F = F
-            most_inliers_percent = inliers_count/len(matches)
+            best_distance = distance_sum/inliers_count             
+#        if (inliers_count/len(matches) >= most_inliers_percent): 
+#            best_inliers = np.array(inliers)
+#            best_F = F
+#            most_inliers_percent = inliers_count/len(matches)
             
         print("inliers : ", inliers_count, "\n" )
         print("percent : ", inliers_count/len(matches), "\n" )
@@ -94,6 +101,7 @@ def RANSAC_for_fundamental_matrix(matches):  # this is a function that you shoul
 
     print("inliers : ", len(best_inliers), "\n" )
     print("percent : ", most_inliers_percent, "\n" )
+    print("best_distance : ", best_distance, "\n" )
     
     return best_F, best_inliers
     

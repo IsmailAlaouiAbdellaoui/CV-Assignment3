@@ -120,10 +120,10 @@ def triangulation_plotting_house(matches_house,camera_1_house,camera_2_house):
         temp =vc1l[-1] *  (-1)
         
         #converting the point into Euclidean space
-        temp = temp / temp[-1]  
+        point_3d = temp / temp[-1]  
 
         #Formatting the point in the right shape and adding it to the points_3d_library numpy array
-        points_3d_house[i] = temp.T.reshape(1,4)
+        points_3d_house[i] = point_3d.T.reshape(1,4)
         
     camera_center1 = compute_camera_center(camera_1_house)
     camera_center2 = compute_camera_center(camera_2_house)
@@ -141,7 +141,7 @@ def triangulation_plotting_house(matches_house,camera_1_house,camera_2_house):
         ax.scatter(points_3d_house[i][0],points_3d_house[i][1],points_3d_house[i][2],c='b')
     plt.legend()
     plt.axis('equal')
-    ax.set_xlim(-5, 2.5)
+    ax.set_xlim(-3, 2)
     ax.set_ylim(-10, 10)
     ax.set_zlim(-10, 0)
     
@@ -152,9 +152,9 @@ def triangulation_plotting_house(matches_house,camera_1_house,camera_2_house):
 
   
 
-#triangulation_plotting_library(matches_library,camera_1_library,camera_2_library)
+triangulation_plotting_library(matches_library,camera_1_library,camera_2_library)
 
-triangulation_plotting_house(matches_house,camera_1_house,camera_2_house)
+#triangulation_plotting_house(matches_house,camera_1_house,camera_2_house)
 
 
 
